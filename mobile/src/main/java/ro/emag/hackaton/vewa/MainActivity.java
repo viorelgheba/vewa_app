@@ -1,13 +1,16 @@
 package ro.emag.hackaton.vewa;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,12 +19,27 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
+import com.google.android.gms.wearable.WearableListenerService;
+
 import ro.emag.hackaton.vewa.Adapter.WishlistAdapter;
 import ro.emag.hackaton.vewa.Helper.SpeechRecognitionHelper;
 import ro.emag.hackaton.vewa.Listener.SpeechButtonClickListener;
 
-public class MainActivity extends Activity {
-    protected VEWAApp mVewaApp;
+public class MainActivity extends Activity implements MessageApi.MessageListener {
+
+    private String TAG = "VEWA_DEBUG_MOBILE";
+    private GoogleApiClient mGoogleApiClient;
+    public static final String VEWA_MESSAGE_PATH = "/vewa";
+
 
     // variable for checking Voice Recognition support on user device
     private static final int VR_REQUEST = 999;
@@ -36,8 +54,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mVewaApp = (VEWAApp) this.getApplicationContext();
 
         ImageButton speechBtn = (ImageButton) findViewById(R.id.speech_btn);
 
@@ -54,6 +70,30 @@ public class MainActivity extends Activity {
                 Toast.makeText(MainActivity.this, "You said: " + word, Toast.LENGTH_SHORT).show();
             }
         });*/
+
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(Bundle connectionHint) {
+                        Log.d(TAG, "onConnected: " + connectionHint);
+                        //sendMessageToWatch("connected");
+                        Wearable.MessageApi.addListener(mGoogleApiClient, MainActivity.this);
+                    }
+                    @Override
+                    public void onConnectionSuspended(int cause) {
+                        Log.d(TAG, "onConnectionSuspended: " + cause);
+                    }
+                })
+                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(ConnectionResult result) {
+                        Log.d(TAG, "onConnectionFailed: " + result);
+                    }
+                })
+                .addApi(Wearable.API)
+                .build();
+        mGoogleApiClient.connect();
 
         if (SpeechRecognitionHelper.isSpeechRecognitionActivityPresented(this)) {
             speechBtn.setOnClickListener(new SpeechButtonClickListener(this, speechBtn));
@@ -105,28 +145,63 @@ public class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    protected void onResume() {
-        super.onResume();
-        if (mVewaApp != null) {
-            mVewaApp.setCurrentActivity(this);
+    @Override
+    public void onMessageReceived(MessageEvent messageEvent) {
+        final String message = new String(messageEvent.getData());
+        Log.v(TAG, "Message received from path " + messageEvent.getPath() + ": " + message + " | Full event: " + messageEvent.toString());
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+
+                String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+                // search for products
+                ArrayList<String> suggestedWords = new ArrayList<String>();
+                suggestedWords.add(message);
+                SpeechRecognitionHelper.search(MainActivity.this, suggestedWords, deviceId);
+
+            }
+        });
+        sendMessageToWatch("Received " + message);
+    }
+
+    private void sendMessageToWatch(final String message){
+        new AsyncTask<Void, Void, List<Node>>(){
+            @Override
+            protected List<Node> doInBackground(Void... params) {
+                return getNodes();
+            }
+            @Override
+            protected void onPostExecute(List<Node> nodeList) {
+                for(Node node : nodeList) {
+                    Log.v(TAG, "Sending " + node.getId() + ": " + message);
+                    PendingResult<MessageApi.SendMessageResult> result = Wearable.MessageApi.sendMessage(
+                            mGoogleApiClient,
+                            node.getId(),
+                            VEWA_MESSAGE_PATH,
+                            message.getBytes()
+                    );
+                    result.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+                        @Override
+                        public void onResult(MessageApi.SendMessageResult sendMessageResult) {
+                            Log.v(TAG, "Phone: " + sendMessageResult.getStatus().getStatusMessage());
+                        }
+                    });
+                }
+            }
+        }.execute();
+    }
+
+    private List<Node> getNodes() {
+        List<Node> nodes = new ArrayList<Node>();
+        NodeApi.GetConnectedNodesResult rawNodes =
+                Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).await();
+        for (Node node : rawNodes.getNodes()) {
+            nodes.add(node);
         }
+        return nodes;
     }
 
-    protected void onPause() {
-        clearReferences();
-        super.onPause();
-    }
-
-    protected void onDestroy() {
-        clearReferences();
-        super.onDestroy();
-    }
-
-    private void clearReferences() {
-        if (mVewaApp != null) {
-            Activity currActivity = mVewaApp.getCurrentActivity();
-            if (currActivity != null && currActivity.equals(this))
-                mVewaApp.setCurrentActivity(null);
-        }
-    }
 }
