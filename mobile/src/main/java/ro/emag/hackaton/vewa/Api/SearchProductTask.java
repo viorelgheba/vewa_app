@@ -58,8 +58,10 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
             Log.d(getClass().getName(), "Response Code: " + apiRequest.getResponseCode());
             Log.d(getClass().getName(), "Response: " + apiRequest.getResponse());
 
+            response = "{\"success\":true,\"data\":{\"request\":{\"term\":\"acesta este un test\",\"max\":1},\"response\":{\"entries\":[{\"id\":1,\"title\":\"Telefon mobil Apple iPhone 6, 16GB, Space Grey\",\"link\":\"http://www.emag.ro/telefon-mobil-apple-iphone-6-16gb-space-grey-iphone-6-16-gb-space-grey/pd/DM51RBBBM/\",\"image_link\":\"http://s3emagst.akamaized.net/products/768/767685/images/res_f99c9e7bcd045ec25c266d517f5c6221_150x150_isa.jpg\",\"price\":\"3.09999\"},{\"id\":2,\"title\":\"Telefon mobil Apple iPhone 6, 16GB, Space Grey\",\"link\":\"http://www.emag.ro/telefon-mobil-apple-iphone-6-16gb-space-grey-iphone-6-16-gb-space-grey/pd/DM51RBBBM/\",\"image_link\":\"http://s3emagst.akamaized.net/products/768/767685/images/res_f99c9e7bcd045ec25c266d517f5c6221_150x150_isa.jpg\",\"price\":\"3.09999\"},{\"id\":3,\"title\":\"Telefon mobil Apple iPhone 6, 16GB, Space Grey\",\"link\":\"http://www.emag.ro/telefon-mobil-apple-iphone-6-16gb-space-grey-iphone-6-16-gb-space-grey/pd/DM51RBBBM/\",\"image_link\":\"http://s3emagst.akamaized.net/products/768/767685/images/res_f99c9e7bcd045ec25c266d517f5c6221_150x150_isa.jpg\",\"price\":\"3.09999\"}],\"total\":1}}}";
+
             if (!response.isEmpty()) {
-                JSONObject jsonObj = new JSONObject(apiRequest.getResponse());
+                JSONObject jsonObj = new JSONObject(response);
                 JSONObject data = jsonObj.getJSONObject("data");
                 JSONObject resp = data.getJSONObject("response");
                 JSONArray entries = resp.getJSONArray("entries");
@@ -86,7 +88,10 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
                     if (entry.has("image_link"))
                         product.setImageLink(entry.getString("image_link"));
 
-                ((MainActivity)activity).sendMessageToWatch(entry.getString("title"));
+                    ((MainActivity)activity).sendMessageToWatch(entry.getString("title"));
+
+                    Log.d(getClass().getName(), "Product image: " + product.getProductName());
+
                     products.add(product);
                 }
             } else {
@@ -113,6 +118,5 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
         WishlistAdapter adapter = new WishlistAdapter(activity, products);
         ListView wordList = (ListView) activity.findViewById(R.id.word_list);
         wordList.setAdapter(adapter);
-        //adapter.notifyDataSetChanged();
     }
 }

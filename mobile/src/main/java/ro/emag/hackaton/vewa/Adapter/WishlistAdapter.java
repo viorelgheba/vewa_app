@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import ro.emag.hackaton.vewa.Api.DownloadImageTask;
 import ro.emag.hackaton.vewa.Entity.Product;
 import ro.emag.hackaton.vewa.R;
 import ro.emag.hackaton.vewa.Utils.ImageLoader;
@@ -47,9 +46,9 @@ public class WishlistAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = convertView;
 
-        if (convertView == null) {
+        if (rowView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            rowView = inflater.inflate(R.layout.wish_list_item, parent);
+            rowView = inflater.inflate(R.layout.wish_list_item, parent, false);
         }
 
         ImageView productImage = (ImageView) rowView.findViewById(R.id.product_image);
@@ -58,19 +57,17 @@ public class WishlistAdapter extends BaseAdapter {
 
         Product product = values.get(position);
 
-        Log.d("WishlistAdapter", "Product id: " + product.getId());
-        Log.d("WishlistAdapter", "Product image: " + product.getImageLink());
-        Log.d("WishlistAdapter", "Product name: " + product.getProductName());
-        Log.d("WishlistAdapter", "Product link: " + product.getProductLink());
-        Log.d("WishlistAdapter", "Product price: " + product.getProductPrice());
+        Log.d(getClass().getName(), "Product id: " + product.getId());
+        Log.d(getClass().getName(), "Product image: " + product.getImageLink());
+        Log.d(getClass().getName(), "Product name: " + product.getProductName());
+        Log.d(getClass().getName(), "Product link: " + product.getProductLink());
+        Log.d(getClass().getName(), "Product price: " + product.getProductPrice());
 
         productName.setText(product.getProductName());
-        productPrice.setText(product.getProductPrice().toString());
+        productPrice.setText(product.getProductPrice().toString() + " Lei");
 
         if (product.getImageLink() != null) {
-            DownloadImageTask downloadImageTask = new DownloadImageTask(productImage);
-            //downloadImageTask.execute(product.getImageLink());
-            downloadImageTask.execute("http://s3emagst.akamaized.net/products/984/983970/images/res_ed0c5304e7b524aad16926084caad4a8_350x350c_9da6.jpg");
+            imageLoader.displayImage(product.getImageLink(), productImage);
         }
 
         return rowView;
