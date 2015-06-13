@@ -143,7 +143,7 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
 
             }
         });
-        sendMessageToWatch("Received " + message);
+        //sendMessageToWatch("Received " + message);
     }
 
     public void sendMessageToWatch(final String message){

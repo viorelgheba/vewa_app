@@ -44,11 +44,13 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
             public void onLayoutInflated(WatchViewStub stub) {
                 mTextView = (TextView) stub.findViewById(R.id.text);
                 setupCapability();
+                startSpeechRecognition();
             }
         });
     }
 
     private void startSpeechRecognition() {
+        mTextView.setText("Waiting for info...");
         // Create an intent to start the Speech Recognizer
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -64,7 +66,7 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
                 List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 String recognizedText = results.get(0);
                 // Display the recognized text
-                mTextView.setText(recognizedText);
+                //mTextView.setText(recognizedText);
                 sendVewaMessage(recognizedText);
             }
         }
@@ -104,7 +106,7 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
                     sendMessageResult.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
                         @Override
                         public void onResult(MessageApi.SendMessageResult sendMessageResult) {
-                           Log.v(TAG, sendMessageResult.getStatus().getStatusMessage());
+                            Log.v(TAG, sendMessageResult.getStatus().getStatusMessage());
                         }
                     });
                 }
@@ -130,7 +132,6 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
             @Override
             public void run() {
                 mTextView.setText(message);
-                Log.v(TAG, "Message received in run on wear on path " + messageEvent.getPath() + ": " + message);
             }
         });
     }
