@@ -1,12 +1,12 @@
 package ro.emag.hackaton.vewa.Api;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
-import android.view.View;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -21,8 +21,12 @@ import ro.emag.hackaton.vewa.R;
 
 public class SearchProductTask extends AsyncTask<String, String, String> {
 
+    // search products api url
+    private static final String API_URL = "http://vewa.birkof.ro/api/search";
+
     private Activity activity;
     private ArrayList<Product> products;
+    private ProgressDialog progressDialog;
 
     public SearchProductTask(Activity activity) {
         this.activity = activity;
@@ -33,8 +37,11 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
     protected void onPreExecute() {
         super.onPreExecute();
 
-        /*ProgressBar progressBar = (ProgressBar) activity.findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.VISIBLE);*/
+        progressDialog = new ProgressDialog(activity);
+        progressDialog.setMessage("Searching products ...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
+        progressDialog.show();
     }
 
     @Override
@@ -46,19 +53,17 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
                 Log.d(getClass().getName(), param);
             }
 
-            ApiRequest apiRequest = new ApiRequest();
+            ApiRequest apiRequest = new ApiRequest(API_URL);
             apiRequest.addParam("term", params[0]);
             apiRequest.addParam("deviceId", params[1]);
             apiRequest.addParam("device", Build.MANUFACTURER + " " + Build.MODEL);
-            apiRequest.addParam("max", "0");
-            apiRequest.sendRequest();
+            apiRequest.addParam("max", "10");
+            apiRequest.post();
 
             response = apiRequest.getResponse();
 
             Log.d(getClass().getName(), "Response Code: " + apiRequest.getResponseCode());
             Log.d(getClass().getName(), "Response: " + apiRequest.getResponse());
-
-            response = "{\"success\":true,\"data\":{\"request\":{\"term\":\"acesta este un test\",\"max\":1},\"response\":{\"entries\":[{\"id\":1,\"title\":\"Telefon mobil Apple iPhone 6, 16GB, Space Grey\",\"link\":\"http://www.emag.ro/telefon-mobil-apple-iphone-6-16gb-space-grey-iphone-6-16-gb-space-grey/pd/DM51RBBBM/\",\"image_link\":\"http://s3emagst.akamaized.net/products/768/767685/images/res_f99c9e7bcd045ec25c266d517f5c6221_150x150_isa.jpg\",\"price\":\"3.09999\"},{\"id\":2,\"title\":\"Telefon mobil Apple iPhone 6, 16GB, Space Grey\",\"link\":\"http://www.emag.ro/telefon-mobil-apple-iphone-6-16gb-space-grey-iphone-6-16-gb-space-grey/pd/DM51RBBBM/\",\"image_link\":\"http://s3emagst.akamaized.net/products/768/767685/images/res_f99c9e7bcd045ec25c266d517f5c6221_150x150_isa.jpg\",\"price\":\"3.09999\"},{\"id\":3,\"title\":\"Telefon mobil Apple iPhone 6, 16GB, Space Grey\",\"link\":\"http://www.emag.ro/telefon-mobil-apple-iphone-6-16gb-space-grey-iphone-6-16-gb-space-grey/pd/DM51RBBBM/\",\"image_link\":\"http://s3emagst.akamaized.net/products/768/767685/images/res_f99c9e7bcd045ec25c266d517f5c6221_150x150_isa.jpg\",\"price\":\"3.09999\"}],\"total\":1}}}";
 
             if (!response.isEmpty()) {
                 JSONObject jsonObj = new JSONObject(response);
@@ -85,8 +90,8 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
                     if (entry.has("price"))
                         product.setProductPrice(entry.getDouble("price"));
 
-                    if (entry.has("image_link"))
-                        product.setImageLink(entry.getString("image_link"));
+                    if (entry.has("image"))
+                        product.setImageLink(entry.getString("image"));
 
                     if (i == 0) {
                         ((MainActivity) activity).sendMessageToWatch(entry.getString("title"));
@@ -114,11 +119,18 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
 
-        /*ProgressBar progressBar = (ProgressBar) activity.findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.GONE);*/
+        MainActivity mainActivity = (MainActivity) activity;
+
+        progressDialog.dismiss();
 
         WishlistAdapter adapter = new WishlistAdapter(activity, products);
         ListView wordList = (ListView) activity.findViewById(R.id.word_list);
         wordList.setAdapter(adapter);
+
+        try {
+            ActionBar actionBar = mainActivity.getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        } catch (Exception e) {}
     }
 }

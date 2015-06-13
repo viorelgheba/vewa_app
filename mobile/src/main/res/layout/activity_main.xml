@@ -1,8 +1,9 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:theme="@style/AppTheme"
     tools:context=".MainActivity">
 
     <ListView
@@ -23,14 +24,7 @@
         android:layout_marginRight="@dimen/speech_button_margin_right"
         android:background="@drawable/speech_shape"
         android:src="@drawable/add"
+        android:contentDescription="@string/speech"
         android:tint="@android:color/white"/>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:progressDrawable="@drawable/circular_progress_bar"
-        style="?android:attr/progressBarStyleLarge"/>
 
 </RelativeLayout>

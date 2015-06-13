@@ -6,12 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 import ro.emag.hackaton.vewa.Entity.Product;
+import ro.emag.hackaton.vewa.Listener.AddToWishListClickListener;
 import ro.emag.hackaton.vewa.R;
 import ro.emag.hackaton.vewa.Utils.ImageLoader;
 
@@ -54,6 +56,7 @@ public class WishlistAdapter extends BaseAdapter {
         ImageView productImage = (ImageView) rowView.findViewById(R.id.product_image);
         TextView productName = (TextView) rowView.findViewById(R.id.product_name);
         TextView productPrice = (TextView) rowView.findViewById(R.id.product_price);
+        ImageButton imageButton = (ImageButton) rowView.findViewById(R.id.add_to_wishlist);
 
         Product product = values.get(position);
 
@@ -69,6 +72,8 @@ public class WishlistAdapter extends BaseAdapter {
         if (product.getImageLink() != null) {
             imageLoader.displayImage(product.getImageLink(), productImage);
         }
+
+        imageButton.setOnClickListener(new AddToWishListClickListener(context, product.getId()));
 
         return rowView;
     }
