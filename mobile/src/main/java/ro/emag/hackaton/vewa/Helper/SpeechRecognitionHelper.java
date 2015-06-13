@@ -5,19 +5,16 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.speech.RecognizerIntent;
-
-import org.apache.http.client.methods.HttpPost;
+import android.util.Log;
 
 import java.util.List;
 
-import ro.emag.hackaton.vewa.Api.RestClient;
+import ro.emag.hackaton.vewa.Api.ApiAsyncTask;
 
 public class SpeechRecognitionHelper {
 
     // variable for checking Voice Recognition support on user device
     private static final int VR_REQUEST = 999;
-
-    private static final String API_URL = "http://vewa.birkof.ro/api/search";
 
     public static boolean isSpeechRecognitionActivityPresented(Activity activity) {
         try {
@@ -52,14 +49,14 @@ public class SpeechRecognitionHelper {
     }
 
     public static void search(String text) {
-        RestClient client = new RestClient(API_URL);
-        client.addParam("term", text);
-        client.addParam("max", "10");
+        Log.v("SpeechRecognitionHelper", text);
 
         try {
-            client.execute(HttpPost.METHOD_NAME);
+            ApiAsyncTask task = new ApiAsyncTask();
+            task.addParam("term", text);
+            task.execute();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.d("SpeechRecognitionHelper", e.getMessage());
         }
     }
 }

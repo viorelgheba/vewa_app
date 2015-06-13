@@ -28,7 +28,7 @@ public class MainActivity extends Activity {
     private ListView wordList;
 
     // Log tag for output information
-    private final String LOG_TAG = "MainActivity";
+    private static final String LOG_TAG = "MainActivity";
 
     // variable for checking TTS engine data on user device
     private int MY_DATA_CHECK_CODE = 0;
@@ -77,6 +77,7 @@ public class MainActivity extends Activity {
 
             if (suggestedWords.size() > 0) {
                 String text = suggestedWords.get(0);
+                Log.v(LOG_TAG, text);
                 SpeechRecognitionHelper.search(text);
             }
         }
