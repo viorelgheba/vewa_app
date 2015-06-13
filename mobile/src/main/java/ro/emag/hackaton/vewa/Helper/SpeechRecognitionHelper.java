@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.speech.RecognizerIntent;
-import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ro.emag.hackaton.vewa.Api.ApiAsyncTask;
@@ -48,15 +48,8 @@ public class SpeechRecognitionHelper {
         activity.startActivityForResult(listenIntent, VR_REQUEST);
     }
 
-    public static void search(String text) {
-        Log.v("SpeechRecognitionHelper", text);
-
-        try {
-            ApiAsyncTask task = new ApiAsyncTask();
-            task.addParam("term", text);
-            task.execute();
-        } catch (Exception e) {
-            Log.d("SpeechRecognitionHelper", e.getMessage());
-        }
+    public static void search(Activity activity, ArrayList<String> suggestedWords, String account) {
+        ApiAsyncTask task = new ApiAsyncTask(activity);
+        task.execute(suggestedWords.get(0), account);
     }
 }

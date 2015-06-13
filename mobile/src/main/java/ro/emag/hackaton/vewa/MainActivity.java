@@ -1,19 +1,20 @@
 package ro.emag.hackaton.vewa;
 
 import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.TextView;
 
 import ro.emag.hackaton.vewa.Adapter.WishlistAdapter;
 import ro.emag.hackaton.vewa.Helper.SpeechRecognitionHelper;
@@ -28,9 +29,6 @@ public class MainActivity extends Activity {
     // ListView for displaying suggested words
     private ListView wordList;
 
-    // Log tag for output information
-    private static final String LOG_TAG = "MainActivity";
-
     // variable for checking TTS engine data on user device
     private int MY_DATA_CHECK_CODE = 0;
 
@@ -38,9 +36,13 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mVewaApp = (VEWAApp)this.getApplicationContext();
+
+        mVewaApp = (VEWAApp) this.getApplicationContext();
 
         ImageButton speechBtn = (ImageButton) findViewById(R.id.speech_btn);
+
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
 
         wordList = (ListView) findViewById(R.id.word_list);
         /*wordList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -66,22 +68,37 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // check speech recognition result
         if (requestCode == VR_REQUEST && resultCode == RESULT_OK) {
             // store the returned word list as an ArrayList
             final ArrayList<String> suggestedWords = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
+            String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+            // search for products
+            SpeechRecognitionHelper.search(this, suggestedWords, deviceId);
+
             // set the retrieved list to display in the ListView using an ArrayAdapter
-            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.wish_list_item, suggestedWords);
             WishlistAdapter adapter = new WishlistAdapter(this, R.layout.wish_list_item, suggestedWords);
             wordList.setAdapter(adapter);
-
-            if (suggestedWords.size() > 0) {
-                String text = suggestedWords.get(0);
-                Log.v(LOG_TAG, text);
-                SpeechRecognitionHelper.search(text);
-            }
         }
 
         // call superclass method
@@ -90,20 +107,26 @@ public class MainActivity extends Activity {
 
     protected void onResume() {
         super.onResume();
-        mVewaApp.setCurrentActivity(this);
+        if (mVewaApp != null) {
+            mVewaApp.setCurrentActivity(this);
+        }
     }
+
     protected void onPause() {
         clearReferences();
         super.onPause();
     }
+
     protected void onDestroy() {
         clearReferences();
         super.onDestroy();
     }
 
-    private void clearReferences(){
-        Activity currActivity = mVewaApp.getCurrentActivity();
-        if (currActivity != null && currActivity.equals(this))
-            mVewaApp.setCurrentActivity(null);
+    private void clearReferences() {
+        if (mVewaApp != null) {
+            Activity currActivity = mVewaApp.getCurrentActivity();
+            if (currActivity != null && currActivity.equals(this))
+                mVewaApp.setCurrentActivity(null);
+        }
     }
 }
