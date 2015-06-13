@@ -2,12 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:orientation="vertical"
-    tools:context=".MainActivity" tools:deviceIds="wear_square">
+    tools:context=".MainActivity" tools:deviceIds="wear_square"
+              android:background="@drawable/card_background">
 
     <TextView android:id="@+id/text" android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:text="VEWA"
               android:layout_gravity="center_horizontal"
-              android:textAlignment="center"/>
+              android:textAlignment="center"
+              android:autoText="false"
+              android:textColor="@color/black"/>
 
     <ImageView
         android:layout_width="wrap_content"
