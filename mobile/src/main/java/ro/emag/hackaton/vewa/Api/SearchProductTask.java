@@ -73,6 +73,10 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
 
                 products.clear();
 
+                if (entries.length() == 0) {
+                    ((MainActivity) activity).sendMessageToWatch("Nu a fost gasit niciun produs.");
+                }
+
                 for (int i = 0; i < entries.length(); i++) {
                     JSONObject entry = entries.getJSONObject(i);
 
@@ -94,7 +98,7 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
                         product.setImageLink(entry.getString("image"));
 
                     if (i == 0) {
-                        ((MainActivity) activity).sendMessageToWatch(entry.getString("title"));
+                        ((MainActivity) activity).sendMessageToWatch(product.getProductName() + ", " + product.getProductPrice() + " lei");
                     }
 
                     Log.d(getClass().getName(), "Product image: " + product.getProductName());
