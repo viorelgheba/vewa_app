@@ -20,6 +20,7 @@ import ro.emag.hackaton.vewa.Helper.SpeechRecognitionHelper;
 import ro.emag.hackaton.vewa.Listener.SpeechButtonClickListener;
 
 public class MainActivity extends Activity {
+    protected VEWAApp mVewaApp;
 
     // variable for checking Voice Recognition support on user device
     private static final int VR_REQUEST = 999;
@@ -37,6 +38,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mVewaApp = (VEWAApp)this.getApplicationContext();
 
         ImageButton speechBtn = (ImageButton) findViewById(R.id.speech_btn);
 
@@ -83,5 +85,24 @@ public class MainActivity extends Activity {
 
         // call superclass method
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    protected void onResume() {
+        super.onResume();
+        mVewaApp.setCurrentActivity(this);
+    }
+    protected void onPause() {
+        clearReferences();
+        super.onPause();
+    }
+    protected void onDestroy() {
+        clearReferences();
+        super.onDestroy();
+    }
+
+    private void clearReferences(){
+        Activity currActivity = mVewaApp.getCurrentActivity();
+        if (currActivity != null && currActivity.equals(this))
+            mVewaApp.setCurrentActivity(null);
     }
 }

@@ -1,9 +1,11 @@
 package ro.emag.hackaton.vewa;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Xml;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -35,7 +37,7 @@ public class WearMessageService extends WearableListenerService {
                     @Override
                     public void onConnected(Bundle connectionHint) {
                         Log.d(TAG, "onConnected: " + connectionHint);
-                        tellWatchConnectedState("connected");
+                        //sendMessageToWatch("connected");
                     }
                     @Override
                     public void onConnectionSuspended(int cause) {
@@ -57,9 +59,11 @@ public class WearMessageService extends WearableListenerService {
     public void onMessageReceived(MessageEvent messageEvent) {
         String message = new String(messageEvent.getData());
         Log.v(TAG, "Message received from path " + messageEvent.getPath() + ": " + message + " | Full event: " + messageEvent.toString());
+        Toast.makeText(VEWAApp.getAppContext(), message, Toast.LENGTH_LONG).show();
+        sendMessageToWatch("Received " + message);
     }
 
-    private void tellWatchConnectedState(final String state){
+    private void sendMessageToWatch(final String message){
         new AsyncTask<Void, Void, List<Node>>(){
             @Override
             protected List<Node> doInBackground(Void... params) {
@@ -68,12 +72,12 @@ public class WearMessageService extends WearableListenerService {
             @Override
             protected void onPostExecute(List<Node> nodeList) {
                 for(Node node : nodeList) {
-                    Log.v(TAG, "telling " + node.getId() + " i am " + state);
+                    Log.v(TAG, "Sending " + node.getId() + ": " + message);
                     PendingResult<MessageApi.SendMessageResult> result = Wearable.MessageApi.sendMessage(
                             mGoogleApiClient,
                             node.getId(),
                             VEWA_MESSAGE_PATH,
-                            state.getBytes()
+                            message.getBytes()
                     );
                     result.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
                         @Override

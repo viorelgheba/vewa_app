@@ -44,7 +44,6 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
             public void onLayoutInflated(WatchViewStub stub) {
                 mTextView = (TextView) stub.findViewById(R.id.text);
                 setupCapability();
-                startSpeechRecognition();
             }
         });
     }
@@ -83,6 +82,7 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
                     @Override
                     public void onConnectionFailed(ConnectionResult result) {
                         mTextView.setText(result.toString());
+                        Log.d(TAG, "onConnectionFailed: " + result);
                     }
                 })
                 .addApi(Wearable.API)
@@ -104,7 +104,7 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
                     sendMessageResult.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
                         @Override
                         public void onResult(MessageApi.SendMessageResult sendMessageResult) {
-                            mTextView.setText(sendMessageResult.getStatus().getStatusMessage());
+                           Log.v(TAG, sendMessageResult.getStatus().getStatusMessage());
                         }
                     });
                 }
@@ -118,18 +118,26 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.v(TAG, "connected to Google Play Services on Wear!");
+        Log.v(TAG, "Connected to Google Play Services on Wear!");
+        Wearable.MessageApi.addListener(googleApiClient, this);
     }
 
     @Override
     public void onMessageReceived(final MessageEvent messageEvent) {
+        final String message = new String(messageEvent.getData());
+        Log.v(TAG, "Message received on wear on path " + messageEvent.getPath() + ": " + message);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mTextView.setText(messageEvent.getData().toString());
+                mTextView.setText(message);
+                Log.v(TAG, "Message received in run on wear on path " + messageEvent.getPath() + ": " + message);
             }
         });
-        Log.v(TAG, "Message received on wear: " + messageEvent.getPath());
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Wearable.MessageApi.removeListener(googleApiClient, this);
+    }
 }
