@@ -15,4 +15,14 @@
         android:src="@mipmap/ic_launcher"
         android:layout_gravity="center_horizontal"
         />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add to wishlist"
+        android:id="@+id/button"
+        android:layout_gravity="center_horizontal"
+        android:clickable="true"
+        android:enabled="true"
+        android:onClick="onClick"/>
 </LinearLayout>

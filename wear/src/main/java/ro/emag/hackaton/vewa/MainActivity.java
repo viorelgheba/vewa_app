@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.wearable.view.WatchViewStub;
+import android.view.View;
 import android.widget.TextView;
 
 import java.util.List;
@@ -49,6 +50,10 @@ public class MainActivity extends Activity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public  void onClick(View target) {
+        startSpeechRecognition();
     }
 
 }
