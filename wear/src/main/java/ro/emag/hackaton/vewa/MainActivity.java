@@ -29,7 +29,7 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
     private static final String VEWA_WISHLIST_CAPABILITY_NAME = "vewa_wishlist";
     private GoogleApiClient googleApiClient;
     public static final String VEWA_MESSAGE_PATH = "/vewa";
-    private final String TAG = "VEWA_DEBUG";
+    private final String TAG = "VEWA_DEBUG_WEAR";
     public String recognizedMessage;
 
 
