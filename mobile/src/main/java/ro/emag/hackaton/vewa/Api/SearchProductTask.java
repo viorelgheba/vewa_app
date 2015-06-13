@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 import ro.emag.hackaton.vewa.Adapter.WishlistAdapter;
 import ro.emag.hackaton.vewa.Entity.Product;
+import ro.emag.hackaton.vewa.MainActivity;
 import ro.emag.hackaton.vewa.R;
 
 public class SearchProductTask extends AsyncTask<String, String, String> {
@@ -83,7 +84,7 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
                 if (entry.has("image_link"))
                     product.setImageLink(entry.getString("image_link"));
 
-                products.add(product);
+                ((MainActivity)activity).sendMessageToWatch(entry.getString("title"));
             }
         } catch (Exception e) {
             Log.d(getClass().getName(), "Error: " + e.getMessage());
