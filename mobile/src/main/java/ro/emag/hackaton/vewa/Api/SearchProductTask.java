@@ -88,7 +88,9 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
                     if (entry.has("image_link"))
                         product.setImageLink(entry.getString("image_link"));
 
-                    ((MainActivity)activity).sendMessageToWatch(entry.getString("title"));
+                    if (i == 0) {
+                        ((MainActivity) activity).sendMessageToWatch(entry.getString("title"));
+                    }
 
                     Log.d(getClass().getName(), "Product image: " + product.getProductName());
 

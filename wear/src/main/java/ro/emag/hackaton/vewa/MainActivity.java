@@ -139,6 +139,13 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
     @Override
     protected void onStop() {
         super.onStop();
-        Wearable.MessageApi.removeListener(googleApiClient, this);
+        //Wearable.MessageApi.removeListener(googleApiClient, this);
+        Log.v(TAG, "onStop");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.v(TAG, "onStart");
     }
 }
