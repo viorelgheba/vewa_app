@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.provider.Settings;
 import android.speech.RecognizerIntent;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ro.emag.hackaton.vewa.Api.ApiAsyncTask;
+import ro.emag.hackaton.vewa.Api.SearchProductTask;
 
 public class SpeechRecognitionHelper {
 
@@ -48,8 +49,12 @@ public class SpeechRecognitionHelper {
         activity.startActivityForResult(listenIntent, VR_REQUEST);
     }
 
-    public static void search(Activity activity, ArrayList<String> suggestedWords, String account) {
-        ApiAsyncTask task = new ApiAsyncTask(activity);
-        task.execute(suggestedWords.get(0), account);
+    public static void search(Activity activity, ArrayList<String> suggestedWords) {
+        SearchProductTask task = new SearchProductTask(activity);
+        task.execute(suggestedWords.get(0), getDeviceName(activity));
+    }
+
+    public static String getDeviceName(Activity activity) {
+        return Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 }

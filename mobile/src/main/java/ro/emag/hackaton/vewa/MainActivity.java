@@ -43,9 +43,6 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
     // variable for checking Voice Recognition support on user device
     private static final int VR_REQUEST = 999;
 
-    // ListView for displaying suggested words
-    private ListView wordList;
-
     // variable for checking TTS engine data on user device
     private int MY_DATA_CHECK_CODE = 0;
 
@@ -58,18 +55,6 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
 
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
-
-        wordList = (ListView) findViewById(R.id.word_list);
-        /*wordList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView wordView = (TextView) view;
-                String word = (String) wordView.getText();
-                Log.v(LOG_TAG, "chosen: " + word);
-                Toast.makeText(MainActivity.this, "You said: " + word, Toast.LENGTH_SHORT).show();
-            }
-        });*/
-
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
@@ -130,14 +115,10 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
             // store the returned word list as an ArrayList
             final ArrayList<String> suggestedWords = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
-            String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
-            // search for products
-            SpeechRecognitionHelper.search(this, suggestedWords, deviceId);
-
-            // set the retrieved list to display in the ListView using an ArrayAdapter
-            WishlistAdapter adapter = new WishlistAdapter(this, R.layout.wish_list_item, suggestedWords);
-            wordList.setAdapter(adapter);
+            if (suggestedWords.size() > 0) {
+                // search for products
+                SpeechRecognitionHelper.search(this, suggestedWords);
+            }
         }
 
         // call superclass method
@@ -154,12 +135,11 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
             public void run() {
                 Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
 
-                String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-
                 // search for products
                 ArrayList<String> suggestedWords = new ArrayList<String>();
                 suggestedWords.add(message);
-                SpeechRecognitionHelper.search(MainActivity.this, suggestedWords, deviceId);
+
+                SpeechRecognitionHelper.search(MainActivity.this, suggestedWords);
 
             }
         });
