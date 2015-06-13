@@ -28,7 +28,6 @@ import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
-import com.google.android.gms.wearable.WearableListenerService;
 
 import ro.emag.hackaton.vewa.Adapter.WishlistAdapter;
 import ro.emag.hackaton.vewa.Helper.SpeechRecognitionHelper;
@@ -167,7 +166,7 @@ public class MainActivity extends Activity implements MessageApi.MessageListener
         sendMessageToWatch("Received " + message);
     }
 
-    private void sendMessageToWatch(final String message){
+    public void sendMessageToWatch(final String message){
         new AsyncTask<Void, Void, List<Node>>(){
             @Override
             protected List<Node> doInBackground(Void... params) {
