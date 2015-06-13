@@ -5,16 +5,34 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.support.wearable.view.WatchViewStub;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.MessageApi;
+import com.google.android.gms.wearable.MessageEvent;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.wearable.Wearable;
+
 import java.util.List;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements MessageApi.MessageListener, GoogleApiClient.ConnectionCallbacks {
 
     private TextView mTextView;
 
     private static final int SPEECH_RECOGNIZER_REQUEST_CODE = 0;
+    private static final String VEWA_WISHLIST_CAPABILITY_NAME = "vewa_wishlist";
+    private GoogleApiClient googleApiClient;
+    public static final String VEWA_MESSAGE_PATH = "/vewa";
+    private final String TAG = "VEWA_DEBUG";
+    public String recognizedMessage;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +43,7 @@ public class MainActivity extends Activity {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
                 mTextView = (TextView) stub.findViewById(R.id.text);
+                setupCapability();
                 startSpeechRecognition();
             }
         });
@@ -47,13 +66,70 @@ public class MainActivity extends Activity {
                 String recognizedText = results.get(0);
                 // Display the recognized text
                 mTextView.setText(recognizedText);
+                sendVewaMessage(recognizedText);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public  void onClick(View target) {
+    public void onClick(View target) {
         startSpeechRecognition();
+    }
+
+    private void setupCapability() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(ConnectionResult result) {
+                        mTextView.setText(result.toString());
+                    }
+                })
+                .addApi(Wearable.API)
+                .build();
+        googleApiClient.connect();
+    }
+
+    private void sendVewaMessage(String recognizedMessage) {
+        this.recognizedMessage = recognizedMessage;
+        PendingResult<NodeApi.GetConnectedNodesResult> result = Wearable.NodeApi.getConnectedNodes(googleApiClient);
+        result.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+            @Override
+            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+                for (final Node node : getConnectedNodesResult.getNodes()) {
+                    Log.v(TAG, "Sending message \"" + MainActivity.this.recognizedMessage + "\" to node " + node.getDisplayName());
+                    PendingResult<MessageApi.SendMessageResult> sendMessageResult = Wearable.MessageApi.sendMessage(googleApiClient, node.getId(),
+                            VEWA_MESSAGE_PATH, MainActivity.this.recognizedMessage.getBytes());
+
+                    sendMessageResult.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {
+                        @Override
+                        public void onResult(MessageApi.SendMessageResult sendMessageResult) {
+                            mTextView.setText(sendMessageResult.getStatus().getStatusMessage());
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.v(TAG, "connected to Google Play Services on Wear!");
+    }
+
+    @Override
+    public void onMessageReceived(final MessageEvent messageEvent) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mTextView.setText(messageEvent.getData().toString());
+            }
+        });
+        Log.v(TAG, "Message received on wear: " + messageEvent.getPath());
     }
 
 }
