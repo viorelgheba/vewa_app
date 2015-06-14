@@ -71,10 +71,14 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
                 ParseJsonResponse.parseProductsResponse(response, products);
 
                 if (products.size() == 0) {
-                    ((MainActivity) activity).sendMessageToWatch("Nu a fost gasit niciun produs.");
+                    if (params[2].equals("wear")) {
+                        ((MainActivity) activity).sendMessageToWatch("Nu a fost gasit niciun produs.");
+                    }
                     noProductsFound();
                 } else {
-                    ((MainActivity) activity).sendMessageToWatch(products.get(0).getProductName());
+                    if (params[2].equals("wear")) {
+                        ((MainActivity) activity).sendMessageToWatch(products.get(0).getProductName());
+                    }
                 }
             } else {
                 noProductsFound();
