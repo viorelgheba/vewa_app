@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="5dip"
+    android:background="#ffffffff"
     android:id="@+id/wish_list_item">
 
     <!--  thumbnail image -->
@@ -19,7 +20,7 @@
             android:layout_width="50dip"
             android:layout_height="50dip"
             android:src="@drawable/no_image"
-            android:contentDescription="Product Image"/>
+            android:contentDescription="@string/product_image"/>
     </LinearLayout>
 
     <!-- product name-->
@@ -47,11 +48,11 @@
 
     <!-- action button -->
     <ImageButton
-        android:id="@+id/add_to_wishlist"
+        android:id="@+id/product_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:src="@android:drawable/btn_star"
+        android:src="@android:drawable/ic_menu_help"
         android:layout_alignParentEnd="true"
         android:scaleType="center"
         android:layout_centerVertical="true"/>

@@ -2,5 +2,11 @@
     <string name="app_name">VEWA</string>
     <string name="intro">Press the button to speak!</string>
     <string name="speech">Speak now!</string>
+    <string name="product_image">Product Image</string>
+    <string name="refresh">Refresh</string>
     <string name="action_wishlist">Wish List</string>
+
+    <string name="add_to_wishlist">Add to wishlist</string>
+    <string name="remove_from_wishlist">Remove from wishlist</string>
+    <string name="open_in_browser">Open in browser</string>
 </resources>

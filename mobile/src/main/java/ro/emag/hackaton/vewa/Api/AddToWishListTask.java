@@ -1,7 +1,6 @@
 package ro.emag.hackaton.vewa.Api;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
@@ -12,17 +11,19 @@ import ro.emag.hackaton.vewa.R;
 public class AddToWishListTask extends AsyncTask<String, String, String> {
 
     // add to wishlist api url
-    private static final String API_URL = "http://vewa.birkof.ro/api/wishlist";
+    private static final String API_URL = "http://vewa.birkof.ro/api/add_product";
 
-    private Context context;
+    private Activity activity;
 
-    public AddToWishListTask(Context context) {
-        this.context = context;
+    public AddToWishListTask(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
     protected String doInBackground(String... params) {
         String response = "";
+
+        Log.d(getClass().getName(), "Product ID: " + params[0]);
 
         try {
             ApiRequest apiRequest = new ApiRequest(API_URL);
@@ -38,14 +39,5 @@ public class AddToWishListTask extends AsyncTask<String, String, String> {
         }
 
         return response;
-    }
-
-    @Override
-    protected void onPostExecute(String result) {
-        super.onPostExecute(result);
-
-        Activity activity = (Activity) context;
-        ImageButton imageButton = (ImageButton) activity.findViewById(R.id.add_to_wishlist);
-        imageButton.setSelected(true);
     }
 }

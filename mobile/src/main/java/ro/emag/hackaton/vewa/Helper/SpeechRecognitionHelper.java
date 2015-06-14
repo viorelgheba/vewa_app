@@ -4,12 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.provider.Settings;
 import android.speech.RecognizerIntent;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ro.emag.hackaton.vewa.Api.AddToWishListTask;
+import ro.emag.hackaton.vewa.Api.ListWishListTask;
 import ro.emag.hackaton.vewa.Api.SearchProductTask;
 
 public class SpeechRecognitionHelper {
@@ -49,9 +53,34 @@ public class SpeechRecognitionHelper {
         activity.startActivityForResult(listenIntent, VR_REQUEST);
     }
 
+    public static void showWishlist(Activity activity) {
+        ListWishListTask task = new ListWishListTask(activity);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getDeviceName(activity));
+        } else {
+            task.execute(getDeviceName(activity));
+        }
+    }
+
     public static void search(Activity activity, ArrayList<String> suggestedWords) {
         SearchProductTask task = new SearchProductTask(activity);
-        task.execute(suggestedWords.get(0), getDeviceName(activity));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, suggestedWords.get(0), getDeviceName(activity));
+        } else {
+            task.execute(suggestedWords.get(0), getDeviceName(activity));
+        }
+    }
+
+    public static void addToWishlist(Activity activity, Integer productId) {
+        AddToWishListTask task = new AddToWishListTask(activity);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, productId.toString(), getDeviceName(activity));
+        } else {
+            task.execute(productId.toString(), getDeviceName(activity));
+        }
     }
 
     public static String getDeviceName(Activity activity) {
