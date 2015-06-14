@@ -8,15 +8,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 import ro.emag.hackaton.vewa.Adapter.WishlistAdapter;
 import ro.emag.hackaton.vewa.Entity.Product;
-import ro.emag.hackaton.vewa.MainActivity;
 import ro.emag.hackaton.vewa.R;
+import ro.emag.hackaton.vewa.Utils.ParseJsonResponse;
 
 public class ListWishListTask extends AsyncTask<String, String, String> {
 
@@ -58,43 +55,7 @@ public class ListWishListTask extends AsyncTask<String, String, String> {
             Log.d(getClass().getName(), "Response: " + apiRequest.getResponse());
 
             if (!response.isEmpty() && apiRequest.getResponseCode() == 200) {
-                JSONObject jsonObj = new JSONObject(response);
-                JSONObject data = jsonObj.getJSONObject("data");
-                JSONObject resp = data.getJSONObject("response");
-                JSONArray entries = resp.getJSONArray("entries");
-
-                products.clear();
-
-                if (entries.length() > 0) {
-                    for (int i = 0; i < entries.length(); i++) {
-                        JSONObject entry = entries.getJSONObject(i);
-
-                        Product product = new Product();
-
-                        if (entry.has("id"))
-                            product.setId(entry.getInt("id"));
-
-                        if (entry.has("title"))
-                            product.setProductName(entry.getString("title"));
-
-                        if (entry.has("link"))
-                            product.setProductLink(entry.getString("link"));
-
-                        if (entry.has("price"))
-                            product.setProductPrice(entry.getDouble("price"));
-
-                        if (entry.has("image"))
-                            product.setImageLink(entry.getString("image"));
-
-                        Log.d(getClass().getName(), "Product id: " + product.getId());
-                        Log.d(getClass().getName(), "Product image: " + product.getImageLink());
-                        Log.d(getClass().getName(), "Product name: " + product.getProductName());
-                        Log.d(getClass().getName(), "Product link: " + product.getProductLink());
-                        Log.d(getClass().getName(), "Product price: " + product.getProductPrice());
-
-                        products.add(product);
-                    }
-                }
+                ParseJsonResponse.parseProductsResponse(response, products);
             }
         } catch (Exception e) {
             Log.d(getClass().getName(), "Error: " + e.getMessage());

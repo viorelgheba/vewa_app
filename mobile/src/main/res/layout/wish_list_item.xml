@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/thumbnail"
         android:layout_toEndOf="@+id/thumbnail"
+        android:layout_toStartOf="@+id/product_menu"
         android:textColor="#040404"
         android:typeface="sans"
         android:textSize="15sp"
@@ -41,10 +42,12 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/product_name"
-        android:textColor="#343434"
+        android:textColor="#cc0000"
+        android:textStyle="bold"
         android:textSize="12sp"
         android:layout_marginTop="1dip"
-        android:layout_toEndOf="@+id/thumbnail"/>
+        android:layout_toEndOf="@+id/thumbnail"
+        android:layout_toStartOf="@+id/product_menu"/>
 
     <!-- action button -->
     <ImageButton
@@ -52,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:src="@android:drawable/ic_menu_help"
+        android:src="@android:drawable/ic_input_add"
         android:layout_alignParentEnd="true"
         android:scaleType="center"
         android:layout_centerVertical="true"/>
