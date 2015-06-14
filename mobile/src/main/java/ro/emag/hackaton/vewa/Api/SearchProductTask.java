@@ -58,7 +58,11 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
             apiRequest.addParam("term", params[0]);
             apiRequest.addParam("deviceId", params[1]);
             apiRequest.addParam("device", Build.MANUFACTURER + " " + Build.MODEL);
-            apiRequest.addParam("max", "10");
+            if (params[2].equals("wear")) {
+                apiRequest.addParam("max", "1");
+            } else {
+                apiRequest.addParam("max", "10");
+            }
             apiRequest.post();
 
             response = apiRequest.getResponse();
