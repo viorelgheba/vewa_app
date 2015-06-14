@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 
 import ro.emag.hackaton.vewa.Adapter.WishlistAdapter;
 import ro.emag.hackaton.vewa.Entity.Product;
+import ro.emag.hackaton.vewa.MainActivity;
 import ro.emag.hackaton.vewa.R;
 import ro.emag.hackaton.vewa.Utils.ParseJsonResponse;
 
@@ -83,6 +85,13 @@ public class ListWishListTask extends AsyncTask<String, String, String> {
         adapter = new WishlistAdapter(activity, new ArrayList<Product>(), searchList);
         searchList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        try {
+            MainActivity mainActivity = (MainActivity) activity;
+            ActionBar actionBar = mainActivity.getSupportActionBar();
+            actionBar.setDisplayUseLogoEnabled(true);
+            actionBar.setLogo(R.mipmap.ic_launcher);
+        } catch (Exception e) {}
 
         super.onPostExecute(result);
     }
