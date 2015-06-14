@@ -14,7 +14,7 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="The List"
+            android:label="VEWA"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
