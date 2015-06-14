@@ -18,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -125,6 +124,7 @@ public class MainActivity extends ActionBarActivity implements MessageApi.Messag
                 SpeechRecognitionHelper.addToWishlist(this, selectedProduct.getId());
                 return true;
             case R.id.remove_from_wishlist:
+                SpeechRecognitionHelper.removeToWishlist(this, selectedProduct.getId());
                 return true;
             case R.id.open_in_browser:
                 Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(selectedProduct.getProductLink()));
@@ -147,6 +147,15 @@ public class MainActivity extends ActionBarActivity implements MessageApi.Messag
 
         switch (id) {
             case android.R.id.home:
+                try {
+                    ActionBar actionBar = getSupportActionBar();
+                    actionBar.setDisplayUseLogoEnabled(true);
+                    actionBar.setLogo(R.mipmap.ic_launcher);
+                } catch (Exception e) {}
+
+                SpeechRecognitionHelper.showWishlist(this);
+                return true;
+            case R.id.refresh:
                 try {
                     ActionBar actionBar = getSupportActionBar();
                     actionBar.setDisplayUseLogoEnabled(true);
@@ -234,5 +243,7 @@ public class MainActivity extends ActionBarActivity implements MessageApi.Messag
         }
         return nodes;
     }
+
+
 
 }

@@ -66,7 +66,7 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
             Log.d(getClass().getName(), "Response Code: " + apiRequest.getResponseCode());
             Log.d(getClass().getName(), "Response: " + apiRequest.getResponse());
 
-            if (!response.isEmpty()) {
+            if (!response.isEmpty() && apiRequest.getResponseCode() == 200) {
                 JSONObject jsonObj = new JSONObject(response);
                 JSONObject data = jsonObj.getJSONObject("data");
                 JSONObject resp = data.getJSONObject("response");
@@ -104,7 +104,11 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
                             SpeechRecognitionHelper.addToWishlist(activity, product.getId());
                         }
 
-                        Log.d(getClass().getName(), "Product image: " + product.getProductName());
+                        Log.d(getClass().getName(), "Product id: " + product.getId());
+                        Log.d(getClass().getName(), "Product image: " + product.getImageLink());
+                        Log.d(getClass().getName(), "Product name: " + product.getProductName());
+                        Log.d(getClass().getName(), "Product link: " + product.getProductLink());
+                        Log.d(getClass().getName(), "Product price: " + product.getProductPrice());
 
                         products.add(product);
                     }

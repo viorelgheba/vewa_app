@@ -5,26 +5,25 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
-import android.widget.ImageButton;
 
-import ro.emag.hackaton.vewa.R;
+import ro.emag.hackaton.vewa.Helper.SpeechRecognitionHelper;
 
-public class AddToWishListTask extends AsyncTask<String, String, String> {
+public class RemoveFromWishListTask extends AsyncTask<String, String, String> {
 
     // add to wishlist api url
-    private static final String API_URL = "http://vewa.birkof.ro/api/add_product";
+    private static final String API_URL = "http://vewa.birkof.ro/api/remove_product";
 
     private Activity activity;
     private ProgressDialog progressDialog;
 
-    public AddToWishListTask(Activity activity) {
+    public RemoveFromWishListTask(Activity activity) {
         this.activity = activity;
     }
 
     @Override
     protected void onPreExecute() {
         progressDialog = new ProgressDialog(activity);
-        progressDialog.setMessage("Loading ...");
+        progressDialog.setMessage("Searching products ...");
         progressDialog.setIndeterminate(true);
         progressDialog.show();
 
@@ -56,6 +55,7 @@ public class AddToWishListTask extends AsyncTask<String, String, String> {
     @Override
     protected void onPostExecute(String result) {
         progressDialog.dismiss();
+        SpeechRecognitionHelper.showWishlist(activity);
 
         super.onPostExecute(result);
     }
