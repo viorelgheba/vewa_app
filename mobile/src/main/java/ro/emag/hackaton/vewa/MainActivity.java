@@ -18,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -147,6 +146,15 @@ public class MainActivity extends ActionBarActivity implements MessageApi.Messag
 
         switch (id) {
             case android.R.id.home:
+                try {
+                    ActionBar actionBar = getSupportActionBar();
+                    actionBar.setDisplayUseLogoEnabled(true);
+                    actionBar.setLogo(R.mipmap.ic_launcher);
+                } catch (Exception e) {}
+
+                SpeechRecognitionHelper.showWishlist(this);
+                return true;
+            case R.id.refresh:
                 try {
                     ActionBar actionBar = getSupportActionBar();
                     actionBar.setDisplayUseLogoEnabled(true);

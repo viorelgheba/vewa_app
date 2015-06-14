@@ -65,7 +65,7 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
             Log.d(getClass().getName(), "Response Code: " + apiRequest.getResponseCode());
             Log.d(getClass().getName(), "Response: " + apiRequest.getResponse());
 
-            if (!response.isEmpty()) {
+            if (!response.isEmpty() && apiRequest.getResponseCode() == 200) {
                 JSONObject jsonObj = new JSONObject(response);
                 JSONObject data = jsonObj.getJSONObject("data");
                 JSONObject resp = data.getJSONObject("response");
