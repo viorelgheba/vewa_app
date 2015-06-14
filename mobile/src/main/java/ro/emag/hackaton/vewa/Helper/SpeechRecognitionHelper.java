@@ -14,6 +14,7 @@ import java.util.List;
 
 import ro.emag.hackaton.vewa.Api.AddToWishListTask;
 import ro.emag.hackaton.vewa.Api.ListWishListTask;
+import ro.emag.hackaton.vewa.Api.RemoveFromWishListTask;
 import ro.emag.hackaton.vewa.Api.SearchProductTask;
 
 public class SpeechRecognitionHelper {
@@ -75,6 +76,16 @@ public class SpeechRecognitionHelper {
 
     public static void addToWishlist(Activity activity, Integer productId) {
         AddToWishListTask task = new AddToWishListTask(activity);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, productId.toString(), getDeviceName(activity));
+        } else {
+            task.execute(productId.toString(), getDeviceName(activity));
+        }
+    }
+
+    public static void removeToWishlist(Activity activity, Integer productId) {
+        RemoveFromWishListTask task = new RemoveFromWishListTask(activity);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, productId.toString(), getDeviceName(activity));

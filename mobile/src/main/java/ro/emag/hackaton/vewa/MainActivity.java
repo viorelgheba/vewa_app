@@ -124,6 +124,7 @@ public class MainActivity extends ActionBarActivity implements MessageApi.Messag
                 SpeechRecognitionHelper.addToWishlist(this, selectedProduct.getId());
                 return true;
             case R.id.remove_from_wishlist:
+                SpeechRecognitionHelper.removeToWishlist(this, selectedProduct.getId());
                 return true;
             case R.id.open_in_browser:
                 Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(selectedProduct.getProductLink()));
@@ -242,5 +243,7 @@ public class MainActivity extends ActionBarActivity implements MessageApi.Messag
         }
         return nodes;
     }
+
+
 
 }

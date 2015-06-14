@@ -102,7 +102,11 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
                             ((MainActivity) activity).sendMessageToWatch(entry.getString("title"));
                         }
 
-                        Log.d(getClass().getName(), "Product image: " + product.getProductName());
+                        Log.d(getClass().getName(), "Product id: " + product.getId());
+                        Log.d(getClass().getName(), "Product image: " + product.getImageLink());
+                        Log.d(getClass().getName(), "Product name: " + product.getProductName());
+                        Log.d(getClass().getName(), "Product link: " + product.getProductLink());
+                        Log.d(getClass().getName(), "Product price: " + product.getProductPrice());
 
                         products.add(product);
                     }

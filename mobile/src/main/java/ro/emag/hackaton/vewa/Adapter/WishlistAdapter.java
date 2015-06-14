@@ -77,12 +77,6 @@ public class WishlistAdapter extends BaseAdapter {
         if (values != null) {
             Product product = values.get(position);
 
-            Log.d(getClass().getName(), "Product id: " + product.getId());
-            Log.d(getClass().getName(), "Product image: " + product.getImageLink());
-            Log.d(getClass().getName(), "Product name: " + product.getProductName());
-            Log.d(getClass().getName(), "Product link: " + product.getProductLink());
-            Log.d(getClass().getName(), "Product price: " + product.getProductPrice());
-
             productName.setText(product.getProductName());
             productPrice.setText(product.getProductPrice().toString() + " Lei");
 

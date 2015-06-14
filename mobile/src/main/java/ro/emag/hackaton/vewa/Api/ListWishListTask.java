@@ -29,6 +29,7 @@ public class ListWishListTask extends AsyncTask<String, String, String> {
 
     public ListWishListTask(Activity activity) {
         this.activity = activity;
+        this.products = new ArrayList<Product>();
     }
 
     @Override
@@ -50,6 +51,8 @@ public class ListWishListTask extends AsyncTask<String, String, String> {
             apiRequest.addParam("deviceId", params[0]);
             apiRequest.addParam("device", Build.MANUFACTURER + " " + Build.MODEL);
             apiRequest.post();
+
+            response = apiRequest.getResponse();
 
             Log.d(getClass().getName(), "Response Code: " + apiRequest.getResponseCode());
             Log.d(getClass().getName(), "Response: " + apiRequest.getResponse());
@@ -87,7 +90,11 @@ public class ListWishListTask extends AsyncTask<String, String, String> {
                             ((MainActivity) activity).sendMessageToWatch(entry.getString("title"));
                         }
 
-                        Log.d(getClass().getName(), "Product image: " + product.getProductName());
+                        Log.d(getClass().getName(), "Product id: " + product.getId());
+                        Log.d(getClass().getName(), "Product image: " + product.getImageLink());
+                        Log.d(getClass().getName(), "Product name: " + product.getProductName());
+                        Log.d(getClass().getName(), "Product link: " + product.getProductLink());
+                        Log.d(getClass().getName(), "Product price: " + product.getProductPrice());
 
                         products.add(product);
                     }
