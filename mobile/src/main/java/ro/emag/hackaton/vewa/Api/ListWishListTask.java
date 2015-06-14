@@ -86,10 +86,6 @@ public class ListWishListTask extends AsyncTask<String, String, String> {
                         if (entry.has("image"))
                             product.setImageLink(entry.getString("image"));
 
-                        if (i == 0) {
-                            ((MainActivity) activity).sendMessageToWatch(entry.getString("title"));
-                        }
-
                         Log.d(getClass().getName(), "Product id: " + product.getId());
                         Log.d(getClass().getName(), "Product image: " + product.getImageLink());
                         Log.d(getClass().getName(), "Product name: " + product.getProductName());
