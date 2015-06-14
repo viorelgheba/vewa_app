@@ -169,7 +169,7 @@ public class MainActivity extends ActionBarActivity implements MessageApi.Messag
 
             if (suggestedWords.size() > 0) {
                 // search for products
-                SpeechRecognitionHelper.search(this, suggestedWords);
+                SpeechRecognitionHelper.search(this, suggestedWords, "mobile");
             }
         }
 
@@ -191,7 +191,7 @@ public class MainActivity extends ActionBarActivity implements MessageApi.Messag
                 ArrayList<String> suggestedWords = new ArrayList<String>();
                 suggestedWords.add(message);
 
-                SpeechRecognitionHelper.search(MainActivity.this, suggestedWords);
+                SpeechRecognitionHelper.search(MainActivity.this, suggestedWords, "wear");
 
             }
         });

@@ -63,13 +63,13 @@ public class SpeechRecognitionHelper {
         }
     }
 
-    public static void search(Activity activity, ArrayList<String> suggestedWords) {
+    public static void search(Activity activity, ArrayList<String> suggestedWords, String source) {
         SearchProductTask task = new SearchProductTask(activity);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, suggestedWords.get(0), getDeviceName(activity));
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, suggestedWords.get(0), getDeviceName(activity), source);
         } else {
-            task.execute(suggestedWords.get(0), getDeviceName(activity));
+            task.execute(suggestedWords.get(0), getDeviceName(activity), source);
         }
     }
 

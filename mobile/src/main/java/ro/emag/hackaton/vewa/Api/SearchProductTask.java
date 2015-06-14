@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import ro.emag.hackaton.vewa.Adapter.WishlistAdapter;
 import ro.emag.hackaton.vewa.Entity.Product;
+import ro.emag.hackaton.vewa.Helper.SpeechRecognitionHelper;
 import ro.emag.hackaton.vewa.MainActivity;
 import ro.emag.hackaton.vewa.R;
 
@@ -73,7 +74,7 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
 
                 products.clear();
 
-                if (entries.length() == 0) {
+                if ((entries.length() == 0)&&(params[2].equals("wear"))) {
                     ((MainActivity) activity).sendMessageToWatch("Nu a fost gasit niciun produs.");
                 }
 
@@ -98,8 +99,9 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
                         if (entry.has("image"))
                             product.setImageLink(entry.getString("image"));
 
-                        if (i == 0) {
-                            ((MainActivity) activity).sendMessageToWatch(entry.getString("title"));
+                        if ((i == 0)&&(params[2].equals("wear"))) {
+                            ((MainActivity) activity).sendMessageToWatch(product.getProductName()+", "+product.getProductPrice()+" lei");
+                            SpeechRecognitionHelper.addToWishlist(activity, product.getId());
                         }
 
                         Log.d(getClass().getName(), "Product image: " + product.getProductName());
