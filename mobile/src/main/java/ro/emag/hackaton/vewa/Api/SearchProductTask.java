@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import ro.emag.hackaton.vewa.Adapter.WishlistAdapter;
 import ro.emag.hackaton.vewa.Entity.Product;
+import ro.emag.hackaton.vewa.Helper.SpeechRecognitionHelper;
 import ro.emag.hackaton.vewa.MainActivity;
 import ro.emag.hackaton.vewa.R;
 import ro.emag.hackaton.vewa.Utils.ParseJsonResponse;
@@ -77,7 +78,12 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
                     noProductsFound();
                 } else {
                     if (params[2].equals("wear")) {
-                        ((MainActivity) activity).sendMessageToWatch(products.get(0).getProductName());
+                        ((MainActivity) activity).sendMessageToWatch(products.get(0).getProductName() + ", " + products.get(0).getProductPrice() + " lei");
+                        activity.runOnUiThread(new Runnable() {
+                            public void run() {
+                                SpeechRecognitionHelper.addToWishlist(activity, products.get(0).getId());
+                            }
+                        });
                     }
                 }
             } else {
