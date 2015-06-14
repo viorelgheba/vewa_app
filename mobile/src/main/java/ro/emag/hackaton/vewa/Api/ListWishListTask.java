@@ -89,8 +89,8 @@ public class ListWishListTask extends AsyncTask<String, String, String> {
         try {
             MainActivity mainActivity = (MainActivity) activity;
             ActionBar actionBar = mainActivity.getSupportActionBar();
-            actionBar.setDisplayUseLogoEnabled(true);
-            actionBar.setLogo(R.mipmap.ic_launcher);
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setHomeButtonEnabled(false);
         } catch (Exception e) {}
 
         super.onPostExecute(result);
