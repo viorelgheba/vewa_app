@@ -10,16 +10,13 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 import ro.emag.hackaton.vewa.Adapter.WishlistAdapter;
 import ro.emag.hackaton.vewa.Entity.Product;
-import ro.emag.hackaton.vewa.Helper.SpeechRecognitionHelper;
 import ro.emag.hackaton.vewa.MainActivity;
 import ro.emag.hackaton.vewa.R;
+import ro.emag.hackaton.vewa.Utils.ParseJsonResponse;
 
 public class SearchProductTask extends AsyncTask<String, String, String> {
 
@@ -67,53 +64,13 @@ public class SearchProductTask extends AsyncTask<String, String, String> {
             Log.d(getClass().getName(), "Response: " + apiRequest.getResponse());
 
             if (!response.isEmpty() && apiRequest.getResponseCode() == 200) {
-                JSONObject jsonObj = new JSONObject(response);
-                JSONObject data = jsonObj.getJSONObject("data");
-                JSONObject resp = data.getJSONObject("response");
-                JSONArray entries = resp.getJSONArray("entries");
+                ParseJsonResponse.parseProductsResponse(response, products);
 
-                products.clear();
-
-                if ((entries.length() == 0)&&(params[2].equals("wear"))) {
+                if (products.size() == 0) {
                     ((MainActivity) activity).sendMessageToWatch("Nu a fost gasit niciun produs.");
-                }
-
-                if (entries.length() > 0) {
-                    for (int i = 0; i < entries.length(); i++) {
-                        JSONObject entry = entries.getJSONObject(i);
-
-                        Product product = new Product();
-
-                        if (entry.has("id"))
-                            product.setId(entry.getInt("id"));
-
-                        if (entry.has("title"))
-                            product.setProductName(entry.getString("title"));
-
-                        if (entry.has("link"))
-                            product.setProductLink(entry.getString("link"));
-
-                        if (entry.has("price"))
-                            product.setProductPrice(entry.getDouble("price"));
-
-                        if (entry.has("image"))
-                            product.setImageLink(entry.getString("image"));
-
-                        if ((i == 0)&&(params[2].equals("wear"))) {
-                            ((MainActivity) activity).sendMessageToWatch(product.getProductName()+", "+product.getProductPrice()+" lei");
-                            SpeechRecognitionHelper.addToWishlist(activity, product.getId());
-                        }
-
-                        Log.d(getClass().getName(), "Product id: " + product.getId());
-                        Log.d(getClass().getName(), "Product image: " + product.getImageLink());
-                        Log.d(getClass().getName(), "Product name: " + product.getProductName());
-                        Log.d(getClass().getName(), "Product link: " + product.getProductLink());
-                        Log.d(getClass().getName(), "Product price: " + product.getProductPrice());
-
-                        products.add(product);
-                    }
-                } else {
                     noProductsFound();
+                } else {
+                    ((MainActivity) activity).sendMessageToWatch(products.get(0).getProductName());
                 }
             } else {
                 noProductsFound();
