@@ -11,7 +11,7 @@ import ro.emag.hackaton.vewa.Helper.SpeechRecognitionHelper;
 public class RemoveFromWishListTask extends AsyncTask<String, String, String> {
 
     // add to wishlist api url
-    private static final String API_URL = "http://vewa.birkof.ro/api/remove_product";
+    private static final String API_URL = "http://vewa.laurentiumatei.com/api/remove_product";
 
     private Activity activity;
     private ProgressDialog progressDialog;

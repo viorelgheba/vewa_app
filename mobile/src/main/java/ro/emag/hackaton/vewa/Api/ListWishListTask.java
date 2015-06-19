@@ -20,7 +20,7 @@ import ro.emag.hackaton.vewa.Utils.ParseJsonResponse;
 public class ListWishListTask extends AsyncTask<String, String, String> {
 
     // add to wishlist api url
-    private static final String API_URL = "http://vewa.birkof.ro/api/wishlist";
+    private static final String API_URL = "http://vewa.laurentiumatei.com/api/wishlist";
 
     private Activity activity;
     private ArrayList<Product> products;

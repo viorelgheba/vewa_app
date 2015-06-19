@@ -12,7 +12,7 @@ import ro.emag.hackaton.vewa.R;
 public class AddToWishListTask extends AsyncTask<String, String, String> {
 
     // add to wishlist api url
-    private static final String API_URL = "http://vewa.birkof.ro/api/add_product";
+    private static final String API_URL = "http://vewa.laurentiumatei.com/api/add_product";
 
     private Activity activity;
     private ProgressDialog progressDialog;

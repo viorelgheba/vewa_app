@@ -22,7 +22,7 @@ import ro.emag.hackaton.vewa.Utils.ParseJsonResponse;
 public class SearchProductTask extends AsyncTask<String, String, String> {
 
     // search products api url
-    private static final String API_URL = "http://vewa.birkof.ro/api/search";
+    private static final String API_URL = "http://vewa.laurentiumatei.com/api/search";
 
     private Activity activity;
     private ArrayList<Product> products;
